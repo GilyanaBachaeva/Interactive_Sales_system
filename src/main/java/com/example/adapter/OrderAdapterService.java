@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class OrderAdapterService {
-    public OrderFileAdapter getAdapter(String inputFilePath) {
+    public OrderFileAdapter getAdapter(String inputFilePath) throws IORuntimeException {
         if (inputFilePath.endsWith(".csv")) {
             return new CsvOrderAdapter();
         } else if (inputFilePath.endsWith(".txt")) {
@@ -22,12 +22,11 @@ public class OrderAdapterService {
         }
     }
 
-    private String readFirstLine(String filePath) {
+    private String readFirstLine(String filePath) throws IORuntimeException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             return reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        } catch (IOException e){
+            throw new IORuntimeException("Ошибка при чтении файла: " + filePath, e);
         }
     }
 }

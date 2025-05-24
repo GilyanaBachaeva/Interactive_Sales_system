@@ -24,8 +24,4 @@ public class Order {
     public int getQuantity() {
         return quantity;
     }
-
-    public LocalDateTime getTimestamp() {
-        return dateTime;
-    }
 }

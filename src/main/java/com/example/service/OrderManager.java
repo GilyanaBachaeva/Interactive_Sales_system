@@ -1,5 +1,7 @@
 package com.example.service;
 
+import com.example.adapter.IORuntimeException;
+import com.example.adapter.OrderAdapterService;
 import com.example.model.Order;
 import com.example.model.OrderSummary;
 import com.example.repository.OrderRepository;
@@ -9,32 +11,24 @@ import java.io.IOException;
 import java.util.List;
 
 public class OrderManager {
-    private final OrderFileAdapter adapter;
+    private final OrderAdapterService adapterService;
     private final OrderService orderService;
     private final OrderRepository orderRepository;
 
-    public OrderManager(OrderFileAdapter adapter, OrderService orderService, OrderRepository orderRepository) {
-        this.adapter = adapter;
+    public OrderManager(OrderAdapterService adapterService, OrderService orderService, OrderRepository orderRepository) {
+        this.adapterService = adapterService;
         this.orderService = orderService;
         this.orderRepository = orderRepository;
     }
 
-    public void processOrders(String inputFilePath) throws IOException {
-        // Чтение заказов из файла
+    public void processOrders(String inputFilePath, double initialDiscount, double discountStep) throws IOException, IORuntimeException {
+
+        OrderFileAdapter adapter = adapterService.getAdapter(inputFilePath);
+
         List<Order> orders = adapter.readOrders(inputFilePath);
 
-        // Создаем объект OrderSummary для хранения итогов
-        OrderSummary orderSummary = new OrderSummary();
+        OrderSummary orderSummary = orderService.processOrders(orders, initialDiscount, discountStep);
 
-
-        for (Order order : orders) {
-            orderService.addOrder(order);
-        }
-
-        // Обработка заказов
-        orderService.processOrders(orders, orderSummary);
-
-        // Сохранение всех заказов в файл
-        orderRepository.saveOrdersToFile(orders, orderSummary);
+        orderRepository.saveSummary("orders_report.txt", orderSummary);
     }
 }
