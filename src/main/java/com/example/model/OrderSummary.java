@@ -29,7 +29,7 @@ public class OrderSummary {
             OrderDetails details = entry.getValue();
             summaryBuilder.append("Название фирмы заказчика: ").append(companyName)
                     .append(" | Итоговая цена: ").append(TOTAL_QUANTITY_FORMAT.format(details.getTotalPrice()))
-                    .append(" руб. | Размер скидки: ").append(TOTAL_QUANTITY_FORMAT.format(details.getDiscount() * 100)).append("%\n");
+                    .append(" руб. | Размер скидки: ").append(TOTAL_QUANTITY_FORMAT.format(details.getDiscount())).append("%\n");
         }
         return summaryBuilder.toString();
     }
