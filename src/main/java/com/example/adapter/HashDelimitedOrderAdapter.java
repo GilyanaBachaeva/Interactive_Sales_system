@@ -33,8 +33,7 @@ public class HashDelimitedOrderAdapter implements OrderFileAdapter {
                 }
             }
         } catch (IOException e) {
-            // Здесь выбрасываем IOException, чтобы тесты могли его поймать
-            throw new IOException("Ошибка чтения файла: " + filePath, e);
+            throw new RuntimeException("Ошибка чтения файла: " + filePath, e);
         }
         return orders;
     }

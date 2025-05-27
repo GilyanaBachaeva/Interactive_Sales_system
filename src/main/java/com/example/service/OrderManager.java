@@ -14,11 +14,13 @@ public class OrderManager {
     private final OrderAdapterService adapterService;
     private final OrderService orderService;
     private final OrderRepository orderRepository;
+    private String ordersOutputFile;
 
-    public OrderManager(OrderAdapterService adapterService, OrderService orderService, OrderRepository orderRepository) {
+    public OrderManager(OrderAdapterService adapterService, OrderService orderService, OrderRepository orderRepository, String ordersOutputFile) {
         this.adapterService = adapterService;
         this.orderService = orderService;
         this.orderRepository = orderRepository;
+        this.ordersOutputFile = ordersOutputFile;
     }
 
     public void processOrders(String inputFilePath, double initialDiscount, double discountStep) throws IOException, IORuntimeException {
@@ -29,6 +31,6 @@ public class OrderManager {
 
         OrderSummary orderSummary = orderService.processOrders(orders, initialDiscount, discountStep);
 
-        orderRepository.saveSummary("orders_report.txt", orderSummary);
+        orderRepository.saveSummary(ordersOutputFile, orderSummary);
     }
 }

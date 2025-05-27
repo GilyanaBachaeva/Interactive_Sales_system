@@ -7,10 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public class OrderService {
-    final double PRICE_PER_1KG = 10;
+    final double PRICE_PER_KG = 10;
 
     public OrderSummary processOrders(List<Order> orders, double initialDiscount, double discountStep) {
-        int count_able_for_discount = (int) Math.ceil(initialDiscount/discountStep);
+        int availableDiscountCount = (int) Math.ceil(initialDiscount/discountStep);
         OrderSummary orderSummary = new OrderSummary();
         double currentDiscount = initialDiscount;
 
@@ -25,7 +25,7 @@ public class OrderService {
 
             double totalPrice;
 
-            if (i < count_able_for_discount) {
+            if (i < availableDiscountCount) {
                 totalPrice = calculatePrice(order.getQuantity(), currentDiscount);
                 orderSummary.addEntry(order.getCompanyName(), totalPrice, currentDiscount);
                 currentDiscount = Math.max(0, currentDiscount - discountStep);
@@ -39,10 +39,10 @@ public class OrderService {
 
     double calculatePrice(int quantity, double discount) {
         if (discount > 0) {
-            double price = quantity * PRICE_PER_1KG;
+            double price = quantity * PRICE_PER_KG;
             return price * (discount / 100);
         } else {
-            return quantity * PRICE_PER_1KG;
+            return quantity * PRICE_PER_KG;
         }
     }
 }
