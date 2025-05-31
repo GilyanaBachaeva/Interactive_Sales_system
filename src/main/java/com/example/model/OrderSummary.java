@@ -1,17 +1,12 @@
 package com.example.model;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.repository.OrderRepository.TOTAL_QUANTITY_FORMAT;
-
 public class OrderSummary {
-    private Map<String, OrderDetails> summary;
-
-    public OrderSummary() {
-
-        this.summary = new HashMap<>();
-    }
+    private Map<String, OrderDetails> summary = new HashMap<>();
+    public static final DecimalFormat TOTAL_QUANTITY_FORMAT = new DecimalFormat("#");
 
     public void addEntry(String companyName, double totalPrice, double discount) {
         summary.merge(companyName, new OrderDetails(totalPrice, discount), (existingDetails, newDetails) -> {

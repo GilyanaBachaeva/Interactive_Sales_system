@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.adapter.IORuntimeException;
 import com.example.adapter.OrderAdapterService;
 import com.example.model.Order;
 import com.example.model.OrderSummary;
@@ -14,23 +13,26 @@ public class OrderManager {
     private final OrderAdapterService adapterService;
     private final OrderService orderService;
     private final OrderRepository orderRepository;
-    private String ordersOutputFile;
 
     public OrderManager(OrderAdapterService adapterService, OrderService orderService, OrderRepository orderRepository, String ordersOutputFile) {
         this.adapterService = adapterService;
         this.orderService = orderService;
         this.orderRepository = orderRepository;
-        this.ordersOutputFile = ordersOutputFile;
     }
 
-    public void processOrders(String inputFilePath, double initialDiscount, double discountStep) throws IOException, IORuntimeException {
+    public void processOrders(String inputFilePath, String ordersOutputFile, double initialDiscount, double discountStep) {
+        try {
+            OrderFileAdapter adapter = adapterService.getAdapter(inputFilePath);
 
-        OrderFileAdapter adapter = adapterService.getAdapter(inputFilePath);
+            List<Order> orders = adapter.readOrders(inputFilePath);
 
-        List<Order> orders = adapter.readOrders(inputFilePath);
+            OrderSummary orderSummary = orderService.processOrders(orders, initialDiscount, discountStep);
 
-        OrderSummary orderSummary = orderService.processOrders(orders, initialDiscount, discountStep);
-
-        orderRepository.saveSummary(ordersOutputFile, orderSummary);
+            orderRepository.saveSummary(ordersOutputFile, orderSummary);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 }

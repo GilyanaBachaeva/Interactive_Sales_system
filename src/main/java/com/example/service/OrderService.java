@@ -28,7 +28,7 @@ public class OrderService {
             if (i < availableDiscountCount) {
                 totalPrice = calculatePrice(order.getQuantity(), currentDiscount);
                 orderSummary.addEntry(order.getCompanyName(), totalPrice, currentDiscount);
-                currentDiscount = Math.max(0, currentDiscount - discountStep);
+                currentDiscount -= discountStep;
             } else {
                 totalPrice = calculatePrice(order.getQuantity(), 0);
                 orderSummary.addEntry(order.getCompanyName(), totalPrice, 0);
@@ -41,8 +41,7 @@ public class OrderService {
         if (discount > 0) {
             double price = quantity * PRICE_PER_KG;
             return price * (discount / 100);
-        } else {
-            return quantity * PRICE_PER_KG;
         }
+        return quantity * PRICE_PER_KG;
     }
 }

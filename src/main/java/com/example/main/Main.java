@@ -24,6 +24,6 @@ public class Main {
         OrderManager orderManager = new OrderManager(orderAdapterService, orderService, orderRepository, outputFilePath);
 
 
-        orderManager.processOrders(inputFilePath,50, 5);
+        orderManager.processOrders(inputFilePath, "orders_report.txt",50, 5);
     }
 }
