@@ -16,31 +16,31 @@ public class OrderService {
 
         orders.sort(Comparator.comparing(Order::getDateTime));
 
+        if (orders.size() <= 0) {
+            throw new IllegalArgumentException("Количество не может быть отрицательным");
+        }
+        double totalPrice;
+
         for (int i = 0; i < orders.size(); i++) {
             Order order = orders.get(i);
-
-            if (order.getQuantity() < 0) {
-                throw new IllegalArgumentException("Количество не может быть отрицательным");
-            }
-
-            double totalPrice;
 
             if (i < availableDiscountCount) {
                 totalPrice = calculatePrice(order.getQuantity(), currentDiscount);
                 orderSummary.addEntry(order.getCompanyName(), totalPrice, currentDiscount);
-                currentDiscount -= discountStep;
+                currentDiscount = currentDiscount - discountStep;
             } else {
                 totalPrice = calculatePrice(order.getQuantity(), 0);
                 orderSummary.addEntry(order.getCompanyName(), totalPrice, 0);
             }
         }
         return orderSummary;
+
     }
 
     double calculatePrice(int quantity, double discount) {
         if (discount > 0) {
-            double price = quantity * PRICE_PER_KG;
-            return price * (discount / 100);
+            int price = (int) (quantity * PRICE_PER_KG);
+            return (price - ((price * discount) / 100));
         }
         return quantity * PRICE_PER_KG;
     }
