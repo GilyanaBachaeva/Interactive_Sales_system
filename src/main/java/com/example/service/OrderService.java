@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class OrderService {
-    final double PRICE_PER_KG = 10;
+    private final static double PRICE_PER_KG = 10;
 
     public OrderSummary processOrders(List<Order> orders, double initialDiscount, double discountStep) {
         int availableDiscountCount = (int) Math.ceil(initialDiscount/discountStep);
