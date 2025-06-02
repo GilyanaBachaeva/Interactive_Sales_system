@@ -30,7 +30,7 @@ public class OrderManager {
 
             orderRepository.saveSummary(ordersOutputFile, orderSummary);
         }catch (Exception e) {
-            throw new OrderProcessRuntimeException("Список заказов не может быть прочитан или он пуст");
+            throw new OrderProcessRuntimeException("The order list cannot be read");
         }
     }
 }

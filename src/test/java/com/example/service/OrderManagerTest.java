@@ -6,8 +6,12 @@ import com.example.adapter.OrderProcessRuntimeException;
 import com.example.model.Order;
 import com.example.model.OrderSummary;
 import com.example.repository.OrderRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,19 +26,21 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class OrderManagerTest {
+
+    @Mock
     private OrderAdapterService adapterService;
+
+    @Mock
     private OrderService orderService;
+
+    @Mock
     private OrderRepository orderRepository;
+
+    @InjectMocks
     private OrderManager orderManager;
 
-    @BeforeEach
-    void setUp() {
-        adapterService = mock(OrderAdapterService.class);
-        orderService = mock(OrderService.class);
-        orderRepository = mock(OrderRepository.class);
-        orderManager = new OrderManager(adapterService, orderService, orderRepository, "outputtest.txt");
-    }
 
     @Test
     void processOrders_shouldInvokeAllMethods_withCorrectsParameters () throws IOException {
@@ -75,7 +81,7 @@ public class OrderManagerTest {
             orderManager.processOrders(inputFilePath, "output.txt", 0.1, 0.05);
         });
 
-        assertEquals("Список заказов не может быть прочитан или он пуст", exception.getMessage());
+        assertEquals("The order list cannot be read", exception.getMessage());
     }
 
     @Test
@@ -89,6 +95,6 @@ public class OrderManagerTest {
             orderManager.processOrders(inputFilePath, "output.txt", 0.1, 0.05);
         });
 
-        assertEquals("Список заказов не может быть прочитан или он пуст", exception.getMessage());
+        assertEquals("The order list cannot be read", exception.getMessage());
     }
 }
