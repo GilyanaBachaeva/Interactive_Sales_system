@@ -6,6 +6,7 @@ import com.example.adapter.OrderProcessRuntimeException;
 import com.example.model.Order;
 import com.example.model.OrderSummary;
 import com.example.repository.OrderRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,6 +42,14 @@ public class OrderManagerTest {
     @InjectMocks
     private OrderManager orderManager;
 
+    private Path tempOutputFile;
+
+    @AfterEach
+    void tearDown() throws IOException {
+        if (tempOutputFile != null && Files.exists(tempOutputFile)) {
+            Files.delete(tempOutputFile);
+        }
+    }
 
     @Test
     void processOrders_shouldInvokeAllMethods_withCorrectsParameters () throws IOException {
@@ -48,7 +57,7 @@ public class OrderManagerTest {
         double initialDiscount = 50.0;
         double discountStep = 5.0;
 
-        Path tempOutputFile = Files.createTempFile("output", ".txt");
+        tempOutputFile = Files.createTempFile("output", ".txt");
         String outputFilePath = tempOutputFile.toString();
 
         OrderFileAdapter adapter = mock(OrderFileAdapter.class);
@@ -69,7 +78,6 @@ public class OrderManagerTest {
         verify(orderService).processOrders(orders, initialDiscount, discountStep);
         verify(orderRepository).saveSummary(outputFilePath, orderSummary);
 
-        Files.deleteIfExists(tempOutputFile);
     }
 
     @Test
