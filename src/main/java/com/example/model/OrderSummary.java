@@ -3,6 +3,7 @@ package com.example.model;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OrderSummary {
     private Map<String, OrderDetails> summary = new HashMap<>();
@@ -18,15 +19,12 @@ public class OrderSummary {
 
     @Override
     public String toString() {
-        StringBuilder summaryBuilder = new StringBuilder();
-        for (Map.Entry<String, OrderDetails> entry : summary.entrySet()) {
-            String companyName = entry.getKey();
-            OrderDetails details = entry.getValue();
-            summaryBuilder.append("Название фирмы заказчика: ").append(companyName)
-                    .append(" | Итоговая цена: ").append(TOTAL_QUANTITY_FORMAT.format(details.getTotalPrice()))
-                    .append(" руб. | Размер скидки: ").append(TOTAL_QUANTITY_FORMAT.format(details.getDiscount())).append("%\n");
-        }
-        return summaryBuilder.toString();
+        return summary.entrySet().stream()
+                .map(entry -> String.format("Название фирмы заказчика: %s | Итоговая цена: %s руб. | Размер скидки: %s%%",
+                        entry.getKey(),
+                        TOTAL_QUANTITY_FORMAT.format(entry.getValue().getTotalPrice()),
+                        TOTAL_QUANTITY_FORMAT.format(entry.getValue().getDiscount())))
+                .collect(Collectors.joining("\n"));
     }
 
     public Map<String, OrderDetails> getSummary() {

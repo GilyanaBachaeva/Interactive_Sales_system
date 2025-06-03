@@ -5,6 +5,7 @@ import com.example.model.OrderSummary;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class OrderService {
     private final static double PRICE_PER_KG = 10;
@@ -12,29 +13,20 @@ public class OrderService {
     public OrderSummary processOrders(List<Order> orders, double initialDiscount, double discountStep) {
         int availableDiscountCount = (int) Math.ceil(initialDiscount/discountStep);
         OrderSummary orderSummary = new OrderSummary();
-        double currentDiscount = initialDiscount;
 
-        orders.sort(Comparator.comparing(Order::getDateTime));
-
-        if (orders.size() <= 0) {
+        if (orders.isEmpty()) {
             throw new IllegalArgumentException("Количество не может быть отрицательным");
         }
-        double totalPrice;
+        orders.sort(Comparator.comparing(Order::getDateTime));
 
-        for (int i = 0; i < orders.size(); i++) {
+        IntStream.range(0, orders.size()).forEach(i -> {
             Order order = orders.get(i);
+            double currentDiscount = (i < availableDiscountCount) ? initialDiscount - (i * discountStep) : 0;
+            double totalPrice = calculatePrice(order.getQuantity(), currentDiscount);
+            orderSummary.addEntry(order.getCompanyName(), totalPrice, currentDiscount);
+        });
 
-            if (i < availableDiscountCount) {
-                totalPrice = calculatePrice(order.getQuantity(), currentDiscount);
-                orderSummary.addEntry(order.getCompanyName(), totalPrice, currentDiscount);
-                currentDiscount = currentDiscount - discountStep;
-            } else {
-                totalPrice = calculatePrice(order.getQuantity(), 0);
-                orderSummary.addEntry(order.getCompanyName(), totalPrice, 0);
-            }
-        }
         return orderSummary;
-
     }
 
     double calculatePrice(int quantity, double discount) {
