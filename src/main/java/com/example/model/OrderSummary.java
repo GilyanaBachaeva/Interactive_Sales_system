@@ -1,0 +1,54 @@
+package com.example.model;
+
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+public class OrderSummary {
+    private Map<String, OrderDetails> summary = new HashMap<>();
+    public static final DecimalFormat TOTAL_QUANTITY_FORMAT = new DecimalFormat("#");
+
+    public void addEntry(String companyName, double totalPrice, double discount) {
+        summary.merge(companyName, new OrderDetails(totalPrice, discount), (existingDetails, newDetails) -> {
+            double updateTotalPrice = existingDetails.getTotalPrice() + newDetails.getTotalPrice();
+            double updateDiscount = Math.max(existingDetails.getDiscount(), newDetails.getDiscount());
+            return  new OrderDetails(updateTotalPrice, updateDiscount);
+        });
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder summaryBuilder = new StringBuilder();
+        for (Map.Entry<String, OrderDetails> entry : summary.entrySet()) {
+            String companyName = entry.getKey();
+            OrderDetails details = entry.getValue();
+            summaryBuilder.append("Название фирмы заказчика: ").append(companyName)
+                    .append(" | Итоговая цена: ").append(TOTAL_QUANTITY_FORMAT.format(details.getTotalPrice()))
+                    .append(" руб. | Размер скидки: ").append(TOTAL_QUANTITY_FORMAT.format(details.getDiscount())).append("%\n");
+        }
+        return summaryBuilder.toString();
+    }
+
+    public Map<String, OrderDetails> getSummary() {
+        return summary;
+    }
+
+    public static class OrderDetails {
+        private double totalPrice;
+        private double discount;
+
+        public OrderDetails(double totalPrice, double discount) {
+            this.totalPrice = totalPrice;
+            this.discount = discount;
+        }
+
+        public double getTotalPrice() {
+            return totalPrice;
+        }
+
+        public double getDiscount() {
+            return discount;
+        }
+
+    }
+}
